@@ -25,7 +25,7 @@ cityInput.addEventListener("keydown", (e) => {
   }
 });
 
-const getFetchData = async (city, endPoint) => {
+const getFetchData = async (endPoint, city) => {
   const apiUrl = `https://api.openweathermap.org/data/2.5/${endPoint}?q=${city}&appid=${apiKey}`;
 
   try {
@@ -45,6 +45,6 @@ const getFetchData = async (city, endPoint) => {
 };
 
 const updateWeatherInfo = async (city) => {
-  const weatherData = getFetchData("weather", city);
+  const weatherData = await getFetchData("weather", city);
   console.log(weatherData);
 };
