@@ -1,7 +1,6 @@
 const cityInput = document.querySelector(".city-input");
 const searchBtn = document.querySelector(".search-btn");
 
-const apiKey = "ccedc5f26bf12146e4f5d673f45a7492";
 
 searchBtn.addEventListener("click", () => {
   if (cityInput.value.trim() !== "") {
@@ -24,9 +23,12 @@ cityInput.addEventListener("keydown", (e) => {
     cityInput.blur();
   }
 });
+// const apiUrl = `http://localhost:3000/weather?city=London&endPoint=weather`
+// console.log(`Api: ${apiUrl}`)
 
 const getFetchData = async (endPoint, city) => {
-  const apiUrl = `https://api.openweathermap.org/data/2.5/${endPoint}?q=${city}&appid=${apiKey}`;
+  // const apiUrl  = `https://api.openweathermap.org/data/2.5/${endPoint}?q=${city}&appid=${apiKey}`;
+ const apiUrl = `http://localhost:3000/weather?city=${city}&endPoint=${endPoint}`
 
   try {
     const res = await fetch(apiUrl);
