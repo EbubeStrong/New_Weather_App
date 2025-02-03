@@ -1,3 +1,7 @@
+import APIKEY from "./config.js";
+const API_KEY = APIKEY; // Assign API key from config.js
+console.log("API Key:", API_KEY);
+
 const cityInput = document.querySelector(".city-input");
 const searchBtn = document.querySelector(".search-btn");
 
@@ -32,7 +36,14 @@ cityInput.addEventListener("keydown", (e) => {
 });
 
 const getFetchData = async (endPoint, city) => {
-  const apiUrl = `http://localhost:3000/weather?city=${city}&endPoint=${endPoint}`;
+  // const apiUrl = `http://localhost:3000/weather?city=${city}&endPoint=${endPoint}`;
+  // const apiUrl = `https://backend-2j1vtfqbm-ebubestrong-projects.vercel.app/weather?city=${city}&endPoint=${endPoint}`;
+  // const apiUrl = `https://backend-2j1vtfqbm-ebubestrong-projects.vercel.app/weather?city=${city}&endPoint=${endPoint}`;
+  // const apiUrl = `https://backend-hdej6hysl-ebubestrong-projects.vercel.app/weather?city=${city}&endPoint=${endPoint}`;
+
+  // const apiUrl =  `https://api.openweathermap.org/data/2.5/${endPoint}?appid=${API_KEY}&units=metric/weather?city=${city}&endPoint=${endPoint}`
+  const apiUrl = `https://api.openweathermap.org/data/2.5/${endPoint}?q=${city}&appid=${API_KEY}&units=metric`;
+
   try {
     const res = await fetch(apiUrl);
     if (!res.ok) {
@@ -44,9 +55,8 @@ const getFetchData = async (endPoint, city) => {
   } catch (error) {
     console.log("Fetched error", error);
     return null;
-  } 
+  }
 };
-
 
 const getWeatherIcon = (id) => {
   if (id <= 232) return "thunderstorm.svg";
@@ -97,8 +107,13 @@ const updateWeatherInfo = async (city) => {
 
     showDisplaySection(weatherInfoSection);
   } catch (error) {
-    console.error("❌ Error fetching weather data:", error);
+    // const ErrMessage = document.createElement("p");
+    // ErrMessage.textContent = "Internet Disconnect, please, try again later";
+    // ErrMessage.classList.add("err-text");
+    // showDisplaySection(ErrMessage);
+
     showDisplaySection(notFoundSection);
+    console.error("❌ Error fetching weather data:", error);
   } finally {
     removeLoading();
   }
@@ -199,7 +214,6 @@ const showLoading = () => {
   });
 };
 
-
 // const removeLoading = () => {
 //   const loadingText = document.querySelector(".loading-text");
 //   const loadingSpinner = document.querySelector(".loading-spinner");
@@ -219,8 +233,6 @@ const removeLoading = () => {
     loadingContainer.style.display = "none"; // ✅ Hide instead of removing
   }
 };
-
-
 
 // GET WEATHER BY GEOLOCATION
 const getWeatherByLocation = () => {
@@ -247,11 +259,17 @@ async function getWeatherByCoords(latitude, longitude) {
 
   try {
     // Fetch current weather data and forecast data
+    // const currentWeatherResponse = await fetch(
+    //   `https://backend-hdej6hysl-ebubestrong-projects.vercel.app/weather?lat=${latitude}&lon=${longitude}&endPoint=weather`
+    // );
     const currentWeatherResponse = await fetch(
-      `http://localhost:3000/weather?lat=${latitude}&lon=${longitude}&endPoint=weather`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
     );
+    // const forecastResponse = await fetch(
+    //   `https://backend-hdej6hysl-ebubestrong-projects.vercel.app/forecast?lat=${latitude}&lon=${longitude}`
+    // );
     const forecastResponse = await fetch(
-      `http://localhost:3000/forecast?lat=${latitude}&lon=${longitude}`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
     );
 
     if (!currentWeatherResponse.ok) {

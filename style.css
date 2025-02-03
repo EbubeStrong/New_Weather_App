@@ -212,6 +212,15 @@ body::before{
   animation: fadeIn 0.3s ease-in-out;
 }
 
+.err-text {
+  font-size: 22px;
+  color: rgb(245, 238, 237);
+  text-align: center;
+  /* margin-top: 1rem; */
+  margin-top: 10rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

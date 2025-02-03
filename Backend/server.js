@@ -13,6 +13,11 @@ console.log("API Key:", API_KEY);
 
 app.use(cors());
 
+// ✅ New Root `/` Route for Testing
+app.get("/", (req, res) => {
+  res.send("Weather API is running!"); // Friendly message
+});
+
 // ✅ Fixed `/weather` Route
 app.get("/weather", async (req, res) => {
   const { city, endPoint, lon, lat } = req.query;
@@ -34,7 +39,9 @@ app.get("/weather", async (req, res) => {
     const response = await fetch(url);
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: "Failed to fetch weather data" });
+      return res
+        .status(response.status)
+        .json({ error: "Failed to fetch weather data" });
     }
 
     const data = await response.json();
@@ -58,7 +65,9 @@ app.get("/forecast", async (req, res) => {
     );
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: "Failed to fetch weather data" });
+      return res
+        .status(response.status)
+        .json({ error: "Failed to fetch weather data" });
     }
 
     const data = await response.json();
@@ -66,6 +75,11 @@ app.get("/forecast", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
+});
+
+// ✅ Default Error Handling
+app.use((req, res) => {
+  res.status(404).send({ error: "Route not found!" });
 });
 
 // Start the server
