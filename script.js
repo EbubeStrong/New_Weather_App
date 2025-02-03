@@ -167,7 +167,7 @@ const showDisplaySection = (section) => {
 };
 
 const showLoading = () => {
-  console.log("✅ showLoading() triggered!");
+  // console.log("✅ showLoading() triggered!");
 
   const searchContainer = document.querySelector(".main-container");
 
@@ -232,7 +232,7 @@ const getWeatherByLocation = () => {
   navigator.geolocation.getCurrentPosition(
     async (position) => {
       const { latitude, longitude } = position.coords;
-      console.log(`📍 Location: Lat ${latitude}, Lon ${longitude}`);
+      // console.log(`📍 Location: Lat ${latitude}, Lon ${longitude}`);
 
       await getWeatherByCoords(latitude, longitude); // Fetch weather by coordinates
     },
@@ -273,8 +273,8 @@ async function getWeatherByCoords(latitude, longitude) {
       ? await forecastResponse.json()
       : null;
 
-    console.log("🌦️ Current Weather Data:", currentWeatherData);
-    console.log("📅 Forecast Data:", forecastData);
+    // console.log("🌦️ Current Weather Data:", currentWeatherData);
+    // console.log("📅 Forecast Data:", forecastData);
 
     // Display the current weather data
     displayWeatherData(currentWeatherData, forecastData);
