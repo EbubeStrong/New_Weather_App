@@ -54,29 +54,26 @@ const getFetchData = async (endPoint, city) => {
 };
 
 const getWeatherIcon = (id) => {
-  if (id <= 232) return 'thunderstorm.svg'
-  if (id <= 321) return 'drizzle.svg'
-  if (id <= 531) return 'rain.svg'
-  if (id <= 622) return 'snow.svg'
-  if (id <= 781) return 'atmosphere.svg'
-  if(id <= 800) return 'clear.svg'
+  if (id <= 232) return "thunderstorm.svg";
+  if (id <= 321) return "drizzle.svg";
+  if (id <= 531) return "rain.svg";
+  if (id <= 622) return "snow.svg";
+  if (id <= 781) return "atmosphere.svg";
+  if (id <= 800) return "clear.svg";
+  else return "clouds.svg";
+};
 
-  else return 'clouds.svg'
-}
-
-
-const getCurrenDate = () => { 
+const getCurrenDate = () => {
   const date = new Date();
-  const options = { weekday: 'short', month: 'short', day: '2-digit' };
-  return date.toLocaleDateString('en-GB', options);
-}
-
+  const options = { weekday: "short", month: "short", day: "2-digit" };
+  return date.toLocaleDateString("en-GB", options);
+};
 
 const updateWeatherInfo = async (city) => {
   try {
     const weatherData = await getFetchData("weather", city);
 
-    console.log("Weather Data:", weatherData);
+    // console.log("Weather Data:", weatherData);
 
     if (!weatherData || weatherData.cod !== 200) {
       console.error("❌ Error: Invalid weather data!");
@@ -102,16 +99,33 @@ const updateWeatherInfo = async (city) => {
     ).src = `./assets/weather/${getWeatherIcon(id)}`;
     document.querySelector(".current-date-txt").textContent = getCurrenDate();
 
+    await updateForecastsInfo(city);
+
     showDisplaySection(weatherInfoSection);
-
-
-    
   } catch (error) {
     console.error("❌ Error fetching weather data:", error);
     showDisplaySection(notFoundSection);
   } finally {
-    removeLoading(); // ✅ Remove loading after fetching data
+    removeLoading(); 
   }
+};
+
+const updateForecastsInfo = async (city) => {
+  const forecastData = await getFetchData("forecast", city);
+
+  const timeTaken = '12:00:00';
+  const todayDate = new Date().toISOString().split('T')[0];
+
+  forecastData.list.forEach((forecastWeather) => {
+    if (forecastWeather.dt_txt.includes(timeTaken) && !forecastWeather.dt_txt.includes(todayDate)) {
+      console.log("Forecast Weather:", forecastWeather);
+    }
+
+    // console.log("Forecast Data:", forecastData);
+
+  })
+
+  // console.log("Forecast Data:", forecastData);
 };
 
 const showDisplaySection = (section) => {
@@ -123,11 +137,20 @@ const showDisplaySection = (section) => {
 };
 
 const showLoading = () => {
-  const searchContainer = document.querySelector(".main-container"); 
+  const searchContainer = document.querySelector(".main-container");
+  const loadingContainer = document.createElement("div");
+
   const loadingMessage = document.createElement("p");
-  loadingMessage.textContent = "Fetching weather data...";
-  loadingMessage.classList.add("loading-text"); // You can style this in CSS
-  searchContainer.appendChild(loadingMessage);
+  loadingMessage.textContent = "Fetching data...";
+  loadingMessage.classList.add("loading-text");
+
+  const loadingSpinner = document.createElement("div");
+  loadingSpinner.classList.add("loading-spinner");
+
+  loadingContainer.appendChild(loadingMessage);
+  loadingContainer.appendChild(loadingSpinner);
+
+  searchContainer.appendChild(loadingContainer);
 
   [weatherInfoSection, searchCitySection, notFoundSection].forEach((sec) => {
     sec.classList.add("hide");
@@ -136,7 +159,9 @@ const showLoading = () => {
 
 const removeLoading = () => {
   const loadingText = document.querySelector(".loading-text");
-  if (loadingText) {
+  const loadingSpinner = document.querySelector(".loading-spinner");
+  if (loadingText && loadingSpinner) {
     loadingText.remove();
+    loadingSpinner.remove();
   }
 };

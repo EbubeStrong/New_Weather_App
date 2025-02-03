@@ -202,12 +202,13 @@ body::before{
 
 
 
-/* LOADING STYLE */
+/* LOADING MESSAGE STYLE */
 .loading-text {
   font-size: 22px;
-  color: rgb(112, 102, 101);
+  color: rgb(245, 238, 237);
   text-align: center;
-  margin-top: 6rem;
+  /* margin-top: 1rem; */
+  margin-top: 10rem;
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -216,4 +217,28 @@ body::before{
   to { opacity: 1; }
 }
 
-/* END LOADING STYLE */
+/* END LOADING MESSAGE STYLE */
+
+
+
+/* LOADING SPINNER STYLE */
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 4px solid rgba(0, 0, 0, 0.2);
+  border-top: 4px solid #e2e6eb; /* Change color as needed */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto 10px auto; /* Center it */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* END LOADING SPINNER STYLE */
