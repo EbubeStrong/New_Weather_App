@@ -1,6 +1,9 @@
 const cityInput = document.querySelector(".city-input");
 const searchBtn = document.querySelector(".search-btn");
 
+const notFoundSection = document.querySelector(".not-found");
+const searchCitySection = document.querySelector(".search-city");
+const weatherInfoSection = document.querySelector(".weather-info");
 
 searchBtn.addEventListener("click", () => {
   if (cityInput.value.trim() !== "") {
@@ -28,7 +31,7 @@ cityInput.addEventListener("keydown", (e) => {
 
 const getFetchData = async (endPoint, city) => {
   // const apiUrl  = `https://api.openweathermap.org/data/2.5/${endPoint}?q=${city}&appid=${apiKey}`;
- const apiUrl = `http://localhost:3000/weather?city=${city}&endPoint=${endPoint}`
+  const apiUrl = `http://localhost:3000/weather?city=${city}&endPoint=${endPoint}`;
 
   try {
     const res = await fetch(apiUrl);
@@ -39,14 +42,36 @@ const getFetchData = async (endPoint, city) => {
     const data = await res.json();
     console.log(data);
 
-    // return data
+    return data;
   } catch (error) {
-      console.error('Fetched error', error);
-      return null
+    // console.error("Fetched error", error);
+    console.log("Fetched error", error);
+    return null;
   }
 };
-
 const updateWeatherInfo = async (city) => {
   const weatherData = await getFetchData("weather", city);
-  console.log(weatherData);
+
+  // console.log("Weather Data:", weatherData); 
+
+  if (!weatherData) {
+    console.error("❌ Error: weatherData is undefined!");
+    showDisplaySection(notFoundSection); 
+    return;
+  }
+
+  if (weatherData.cod != "200") {
+    showDisplaySection(notFoundSection);
+    return;
+  }
+
+  showDisplaySection(weatherInfoSection); 
+};
+
+const showDisplaySection = (section) => {
+  [weatherInfoSection, searchCitySection, notFoundSection].forEach((sec) => {
+    sec.classList.add("hide");
+  });
+
+  section.classList.remove("hide");
 };
