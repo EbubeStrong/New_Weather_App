@@ -2,7 +2,7 @@
 // const API_KEY = APIKEY; // Assign API key from config.js
 // console.log("API Key:", API_KEY);
 
-const APIKEY = "ccedc5f26bf12146e4f5d673f45a7492";
+const API_KEY = "ccedc5f26bf12146e4f5d673f45a7492";
 
 
 const cityInput = document.querySelector(".city-input");
