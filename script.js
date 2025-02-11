@@ -1,9 +1,3 @@
-// import APIKEY from "./config.js";
-// const API_KEY = APIKEY; // Assign API key from config.js
-// console.log("API Key:", API_KEY);
-
-// const API_KEY = "ccedc5f26bf12146e4f5d673f45a7492";
-
 const cityInput = document.querySelector(".city-input");
 const searchBtn = document.querySelector(".search-btn");
 
@@ -55,7 +49,6 @@ const getFetchData = async (endPoint, city) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer YOUR_API_KEY`, // Only if needed
       },
     });
 
@@ -70,38 +63,7 @@ const getFetchData = async (endPoint, city) => {
     console.log("Fetched error", error);
     return null;
   }
-
-  //  const proxyUrl = "https://http-cors-proxy.p.rapidapi.com/";
-  //  const targetUrl = `https://backend-d3zeyqjb2-ebubestrong-projects.vercel.app/weather?city=${city}&endPoint=${endPoint}`;
-
-  //  const options = {
-  //    method: "POST",
-  //    headers: {
-  //      "x-rapidapi-key": "cfa4cf2065msh7ed7336a2b1cdafp16e746jsn360fbc11cf4a",
-  //      "x-rapidapi-host": "http-cors-proxy.p.rapidapi.com",
-  //      "Content-Type": "application/json",
-  //    },
-  //    body: JSON.stringify({ url: targetUrl }), // ✅ Convert object to JSON string
-  //  };
-
-  //  try {
-  //    const response = await fetch(proxyUrl, options);
-
-  //    if (!response.ok) {
-  //      throw new Error(`HTTP error! Status: ${response.status}`);
-  //    }
-
-  //    const data = await response.json(); // ✅ Parse as JSON
-  //    console.log("✅ Weather Data:", data);
-  //    return data;
-  //  } catch (error) {
-  //    console.error("❌ Fetch Error:", error);
-  //    return null;
-  //  }
 };
-
-// getFetchData("weather", "London");
-
 
 const getWeatherIcon = (id) => {
   if (id <= 232) return "thunderstorm.svg";
@@ -153,11 +115,6 @@ const updateWeatherInfo = async (city) => {
 
     showDisplaySection(weatherInfoSection);
   } catch (error) {
-    // const ErrMessage = document.createElement("p");
-    // ErrMessage.textContent = "Internet Disconnect, please, try again later";
-    // ErrMessage.classList.add("err-text");
-    // showDisplaySection(ErrMessage);
-
     showDisplaySection(notFoundSection);
     console.error("❌ Error fetching weather data:", error);
   } finally {
@@ -228,14 +185,14 @@ const showDisplaySection = (section) => {
 };
 
 const showLoading = () => {
-  // console.log("✅ showLoading() triggered!");
+  // console.log(" showLoading() triggered!");
 
   const searchContainer = document.querySelector(".main-container");
 
   let loadingContainer = document.querySelector(".loading-container");
 
   if (!loadingContainer) {
-    // ✅ Create a new loading container if it doesn't exist
+    
     loadingContainer = document.createElement("div");
     loadingContainer.classList.add("loading-container");
 
@@ -250,133 +207,131 @@ const showLoading = () => {
     loadingContainer.appendChild(loadingSpinner);
     searchContainer.appendChild(loadingContainer);
   } else {
-    // ✅ Make sure it's visible
     loadingContainer.style.display = "block";
   }
 
-  // Hide other sections
+  
   [weatherInfoSection, searchCitySection, notFoundSection].forEach((sec) => {
     sec.classList.add("hide");
   });
 };
 
-// const removeLoading = () => {
-//   const loadingText = document.querySelector(".loading-text");
-//   const loadingSpinner = document.querySelector(".loading-spinner");
-
-//   if (loadingText) {
-//     loadingText.remove();
-//   }
-//   if (loadingSpinner) {
-//     loadingSpinner.remove();
-//   }
-// };
-
 const removeLoading = () => {
   const loadingContainer = document.querySelector(".loading-container");
 
   if (loadingContainer) {
-    loadingContainer.style.display = "none"; // ✅ Hide instead of removing
+    loadingContainer.style.display = "none"; 
   }
 };
 
 // GET WEATHER BY GEOLOCATION
-// const getWeatherByLocation = () => {
-//   if (!navigator.geolocation) {
-//     console.error("❌ Geolocation is not supported by this browser.");
-//     return;
-//   }
+const getWeatherByLocation = () => {
+  if (!navigator.geolocation) {
+    console.error("❌ Geolocation is not supported by this browser.");
+    alert("Geolocation is not supported on this browser.");
+    return;
+  }
 
-//   navigator.geolocation.getCurrentPosition(
-//     async (position) => {
-//       const { latitude, longitude } = position.coords;
-//       // console.log(`📍 Location: Lat ${latitude}, Lon ${longitude}`);
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      console.log("✅ Location received");
+      const { latitude, longitude } = position.coords;
+      console.log(`📍 Location: Lat ${latitude}, Lon ${longitude}`);
 
-//       await getWeatherByCoords(latitude, longitude); // Fetch weather by coordinates
-//     },
-//     (error) => {
-//       console.error("❌ Location error:", error.message); // Error in case geolocation fails
-//     }
-//   );
-// };
+      await getWeatherByCoords(latitude, longitude); 
+    },
+    (error) => {
+      console.error(`❌ Location error: ${error.message}`);
+      alert(`Location error: ${error.message}`); 
 
-// async function getWeatherByCoords(latitude, longitude) {
-//   showLoading(); // ✅ Only one call to show the spinner
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          console.warn("⚠️ User denied the request for Geolocation.");
+          alert("Please allow location access to get weather updates.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          console.warn("⚠️ Location information is unavailable.");
+          alert("Could not determine your location. Try again later.");
+          break;
+        case error.TIMEOUT:
+          console.warn("⚠️ The request to get user location timed out.");
+          alert("Location request timed out. Check your internet connection.");
+          break;
+        case error.UNKNOWN_ERROR:
+          console.warn("⚠️ An unknown error occurred.");
+          alert("An unexpected error occurred while fetching your location.");
+          break;
+      }
+    }
+  );
+};
 
-//   try {
-//     // Fetch current weather data and forecast data
-//     const currentWeatherResponse = await fetch(
-//       `https://backend-hdej6hysl-ebubestrong-projects.vercel.app/weather?lat=${latitude}&lon=${longitude}&endPoint=weather`
-//     );
+async function getWeatherByCoords(latitude, longitude) {
+  showLoading(); 
 
-//     // const currentWeatherResponse = await fetch(
-//     //   `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
-//     // );
-//     // const forecastResponse = await fetch(
-//     //   `https://backend-hdej6hysl-ebubestrong-projects.vercel.app/forecast?lat=${latitude}&lon=${longitude}`
-//     // );
-//     const forecastResponse = await fetch(
-//       `https://backend-hdej6hysl-ebubestrong-projects.vercel.app/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
-//     );
+  try {
+    const currentWeatherResponse = await fetch(
+      `https://weather-server-cpgs.onrender.com/weather?lat=${latitude}&lon=${longitude}&endPoint=weather`
+    );
 
-//     if (!currentWeatherResponse.ok) {
-//       throw new Error(
-//         `❌ Failed to fetch weather data: ${currentWeatherResponse.statusText}`
-//       );
-//     }
+    const forecastResponse = await fetch(
+      `https://weather-server-cpgs.onrender.com/forecast?lat=${latitude}&lon=${longitude}`
+    );
 
-//     if (!forecastResponse.ok) {
-//       console.warn("⚠️ Forecast data is unavailable.");
-//       showDisplaySection(notFoundSection); // Show not found section if forecast data is unavailable
-//       removeLoading();
-//       return;
-//     }
+    if (!currentWeatherResponse.ok) {
+      throw new Error(
+        `❌ Failed to fetch weather data: ${currentWeatherResponse.statusText}`
+      );
+    }
 
-//     // Parse the weather data
-//     const currentWeatherData = await currentWeatherResponse.json();
-//     const forecastData = forecastResponse.ok
-//       ? await forecastResponse.json()
-//       : null;
+    if (!forecastResponse.ok) {
+      console.warn("⚠️ Forecast data is unavailable.");
+      showDisplaySection(notFoundSection); 
+      removeLoading();
+      return;
+    }
 
-//     // console.log("🌦️ Current Weather Data:", currentWeatherData);
-//     // console.log("📅 Forecast Data:", forecastData);
+    // Parse the weather data
+    const currentWeatherData = await currentWeatherResponse.json();
+    const forecastData = forecastResponse.ok
+      ? await forecastResponse.json()
+      : null;
 
-//     // Display the current weather data
-//     displayWeatherData(currentWeatherData, forecastData);
+    // Display the current weather data
+    displayWeatherData(currentWeatherData, forecastData);
 
-//     // Update the forecast section after displaying the current weather
-//     updateForecastsInfo(currentWeatherData.name);
-//   } catch (err) {
-//     console.error("❌ Error fetching weather data:", err.message);
-//     showDisplaySection(notFoundSection); // Show not found section in case of an error
-//   } finally {
-//     removeLoading(); // ✅ Removes spinner when fetch is complete
-//   }
-// }
 
-// // 📌 Fetch weather when page loads
-// window.addEventListener("load", getWeatherByLocation); // Automatically get weather by location on page load
+    await updateForecastsInfo(currentWeatherData.name);
+  } catch (err) {
+    console.error("❌ Error fetching weather data:", err.message);
+    showDisplaySection(notFoundSection); 
+  } finally {
+    removeLoading(); 
+  }
+}
 
-// // Function to display the weather data on the page
-// function displayWeatherData(currentWeatherData, forecastData) {
-//   const {
-//     name: country,
-//     main: { temp, humidity },
-//     weather: [{ id, main }],
-//     wind: { speed },
-//   } = currentWeatherData;
+// 📌 Fetch weather when page loads
+window.addEventListener("load", getWeatherByLocation); 
 
-//   // Update elements on the page
-//   document.querySelector(".country-txt").textContent = country;
-//   document.querySelector(".temp-txt").textContent = `${Math.round(temp)}°C`;
-//   document.querySelector(".humidity-txt").textContent = `${humidity}%`;
-//   document.querySelector(".wind-txt").textContent = `${speed} M/s`;
-//   document.querySelector(".condition-txt").textContent = main;
-//   document.querySelector(
-//     ".weather-summary-img"
-//   ).src = `./assets/weather/${getWeatherIcon(id)}`;
-//   document.querySelector(".current-date-txt").textContent = getCurrentDate();
+function displayWeatherData(currentWeatherData) {
+  const {
+    name: country,
+    main: { temp, humidity },
+    weather: [{ id, main }],
+    wind: { speed },
+  } = currentWeatherData;
 
-//   // Show weather info section after data is updated
-//   showDisplaySection(weatherInfoSection);
-// }
+  // Update elements on the page
+  document.querySelector(".country-txt").textContent = country;
+  document.querySelector(".temp-txt").textContent = `${Math.round(temp)}°C`;
+  document.querySelector(".humidity-txt").textContent = `${humidity}%`;
+  document.querySelector(".wind-txt").textContent = `${speed} M/s`;
+  document.querySelector(".condition-txt").textContent = main;
+  document.querySelector(
+    ".weather-summary-img"
+  ).src = `./assets/weather/${getWeatherIcon(id)}`;
+  document.querySelector(".current-date-txt").textContent = getCurrentDate();
+
+  // Show weather info section after data is updated
+  showDisplaySection(weatherInfoSection);
+}
