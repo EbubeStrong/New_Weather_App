@@ -57,7 +57,7 @@ const getFetchData = async (endPoint, city) => {
     }
 
     const data = await res.json();
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     console.log("Fetched error", error);
@@ -234,9 +234,9 @@ const getWeatherByLocation = () => {
 
   navigator.geolocation.getCurrentPosition(
     async (position) => {
-      console.log("✅ Location received");
+      // console.log("✅ Location received");
       const { latitude, longitude } = position.coords;
-      console.log(`📍 Location: Lat ${latitude}, Lon ${longitude}`);
+      // console.log(`📍 Location: Lat ${latitude}, Lon ${longitude}`);
 
       await getWeatherByCoords(latitude, longitude); 
     },
