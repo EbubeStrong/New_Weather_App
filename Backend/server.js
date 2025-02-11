@@ -11,7 +11,15 @@ const API_KEY = APIKEY; // Assign API key from config.js
 
 console.log("API Key:", API_KEY);
 
-app.use(cors());
+// app.use(cors());
+app.use(
+  cors({
+    origin: ["https://d-weather-app.vercel.app", "http://127.0.0.1:5500"],
+    // origin: "http://127.0.0.1:5500",
+    methods: "GET",
+    allowedHeaders: ["Content-Type"], // ✅ Fix: Ensure proper CORS headers
+  })
+);
 
 // ✅ New Root `/` Route for Testing
 app.get("/", (req, res) => {
@@ -84,3 +92,17 @@ app.use((req, res) => {
 
 // Start the server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*"); // Allow all domains
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   next();
+// });
+
+// app.options("*", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.sendStatus(204); // No content response
+// });
